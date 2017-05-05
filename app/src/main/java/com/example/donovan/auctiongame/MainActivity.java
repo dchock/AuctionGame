@@ -43,10 +43,11 @@ public class MainActivity extends AppCompatActivity {
         randomValue =  rangeMin + (rangeMax - rangeMin) * r.nextDouble();
 
         tvRound.setText("This is a test");
-        // tvRandom.setText("This is a test.");
+        //tvRandom.setText("This is a test.");
         //VALUE_FORMAT.format(randomValue)
 
-        //mAuth = FirebaseAuth.getInstance(); //declare object for Firebase
+        mAuth = FirebaseAuth.getInstance(); //declare object for Firebase
+
         mAuthListener = new FirebaseAuth.AuthStateListener() { //initialized mAuthListener
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener); //adds a listener to the object
+        FirebaseUser currentUser = mAuth.getCurrentUser();
     }
 
     public void onStop(){

@@ -49,12 +49,14 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+
         CreateUser.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d("CIS3334", "Create New User ");
                 createAccount(Email.getText().toString(), Password.getText().toString());
             }
         });
+
     }
 
         private void signIn(String email, String password){
