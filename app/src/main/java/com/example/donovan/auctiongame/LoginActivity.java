@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         Email = (EditText) findViewById(R.id.editTextEmail);
         Password = (EditText) findViewById(R.id.editTextPassword);
         ButtonLogin = (Button) findViewById(R.id.buttonLogin);
-        CreateUser = (Button) findViewById(R.id.buttonCreateUser);
+        CreateUser =  (Button) findViewById(R.id.buttonCreateUser);
 
 
         mAuth = FirebaseAuth.getInstance();  //declare object for Firebase
@@ -47,7 +47,6 @@ public class LoginActivity extends AppCompatActivity {
                 signIn(Email.getText().toString(), Password.getText().toString());
             }
         });
-
 
 
         CreateUser.setOnClickListener(new View.OnClickListener() {
