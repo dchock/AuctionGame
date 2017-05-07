@@ -32,9 +32,8 @@ public class MainActivity extends AppCompatActivity {
     Double rangeMax = 100.0;
 
 
-
     DecimalFormat VALUE_FORMAT = new DecimalFormat("0.##");
-    Random r = new Random();
+
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String AuctionGameTag = "Auction Game Data";
     DatabaseReference myFishDbRef;
     private String userId;              // Firebase authentication ID for the current logged int user
+
 
 
     @Override
@@ -56,9 +56,15 @@ public class MainActivity extends AppCompatActivity {
         buttonLogOut = (Button)findViewById(R.id.buttonLogOut);
 
 
-        tvRound.setText("");
-        //tvRandom.setText("This is a test.");
-        //VALUE_FORMAT.format(randomValue)
+        //tvRound.setText(myFishDbRef.child("Round 1").toString());
+
+
+        Random r = new Random();
+        Double randomValue = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+        //VALUE_FORMAT.format(randomValue);
+        String rValue = String.format("%.2f", randomValue);
+        tvRandom.setText(rValue);
+
 
         buttonLogOut.setOnClickListener(new View.OnClickListener() {
             public void onClick (View v) {
@@ -111,14 +117,12 @@ public class MainActivity extends AppCompatActivity {
         buttonSubmit = (Button) findViewById(R.id.buttonSubmit);
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                // Send the user bid to the Firebase database
-                // ---- Get a new database key for the vote
-                //String key = myFishDbRef.child(AuctionGameTag).push().getKey();
-                // ---- write the vote to Firebase
+
+                //write the bid to Firebase
                 //myFishDbRef.child("Round 1").child(userId).child(key).setValue(etYourBid.getText());
                 Log.d("CIS3334", "onClick for buttons writng bid to database");        // debugging log
                 myFishDbRef.child("Round 1").child(userId).setValue(etYourBid.getText().toString());
-
+                myFishDbRef.child("Round 1").child(userId).setValue(tvRandom.getText().toString());
 
             }
         });
@@ -165,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*
     private String getRandom(AppCompatActivity activity) {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -172,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
         return null;
     }
+    */
 
 
     private void checkAutionData(DataSnapshot dataSnapshot) {
@@ -179,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         //myFishDbRef.child("Round 1").child(userId).setValue(etYourBid.getText().toString());
         for (DataSnapshot data : dataSnapshot.child("Round 1").getChildren()) {
             String bidAmount = (String )data.getValue();
+            String rValue = (String )data.getValue();
             Log.d("CIS3334", "=== checkAutionData bid amount = "+ bidAmount);
             String UserIdForBid = data.getKey();
             Log.d("CIS3334", "=== checkAutionData  key = "+ UserIdForBid);
@@ -187,9 +194,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Log.d("CIS3334", "=== checkAutionData Found OTHER team's bid ");
             }
-            String randomValue = (String )data.getValue();
-            Log.d("CIS3334", "=== checkAutionData random value = " + randomValue);
+            //String randomValue = (String )data.getValue();
+            //Log.d("CIS3334", "=== checkAutionData random value = " + randomValue);
         }
-
     }
 }
