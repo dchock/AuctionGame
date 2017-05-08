@@ -1,6 +1,7 @@
 package com.example.donovan.auctiongame;
 
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,20 +20,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView tvRound, tvRandom;
+    TextView tvRound, tvRandom, tvPayoff, tvTotal, tvYourInfo, tvTheirInfo;
     EditText etYourBid;
     Button buttonSubmit;
     Button buttonLogOut;
     Double rangeMin = 0.0;
     Double rangeMax = 100.0;
+    Double randomValue;
 
 
-    DecimalFormat VALUE_FORMAT = new DecimalFormat("0.##");
+
+    //DecimalFormat VALUE_FORMAT = new DecimalFormat("0.##");
 
 
     private FirebaseAuth mAuth;
@@ -54,16 +59,22 @@ public class MainActivity extends AppCompatActivity {
         tvRandom = (TextView)findViewById(R.id.textViewYourRandom);
         etYourBid = (EditText)findViewById(R.id.editTextYourBid);
         buttonLogOut = (Button)findViewById(R.id.buttonLogOut);
+        tvPayoff = (TextView)findViewById(R.id.textViewPayoff);
+        tvTotal = (TextView)findViewById(R.id.textViewTotal);
+        tvYourInfo = (TextView)findViewById(R.id.textViewYourInfo);
+        tvTheirInfo = (TextView)findViewById(R.id.textViewTheirInfo);
 
-
-        //tvRound.setText(myFishDbRef.child("Round 1").toString());
 
 
         Random r = new Random();
-        Double randomValue = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+        randomValue = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+        //String.format("%.02f", randomValue);
         //VALUE_FORMAT.format(randomValue);
-        String rValue = String.format("%.2f", randomValue);
-        tvRandom.setText(rValue);
+       // tvPayoff.setText(randomValue.toString());
+
+        String yourRandomValue = String.format("%.2f", randomValue);
+        tvRandom.setText(yourRandomValue);
+
 
 
         buttonLogOut.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+       // myFishDbRef.child("Round 1").child(userId).child("Random").setValue(tvRandom.getText().toString());
+
         //TEG added
         setupFirebaseDataChange();
         setupAddButton();
@@ -101,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener); //adds a listener to the object
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        //FirebaseUser currentUser = mAuth.getCurrentUser();
     }
 
     public void onStop(){
@@ -111,22 +124,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // TEG added
-    private void setupAddButton() {
-        // Set up the button to add a new fish using a seperate activity
-        buttonSubmit = (Button) findViewById(R.id.buttonSubmit);
-        buttonSubmit.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-
-                //write the bid to Firebase
-                //myFishDbRef.child("Round 1").child(userId).child(key).setValue(etYourBid.getText());
-                Log.d("CIS3334", "onClick for buttons writng bid to database");        // debugging log
-                myFishDbRef.child("Round 1").child(userId).setValue(etYourBid.getText().toString());
-                myFishDbRef.child("Round 1").child(userId).setValue(tvRandom.getText().toString());
-
-            }
-        });
-    }
 
     private void setupFirebaseDataChange() {
         Log.d("CIS3334", "setupFirebaseDataChange openning the database");        // debugging log
@@ -150,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         myFishDbRef = database.getReference(AuctionGameTag);
         // set the user id for the current logged in user
         userId = getUserId(this);
-
         return myFishDbRef;
     }
 
@@ -169,6 +165,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // TEG added
+
+    private void setupAddButton() {
+        // Set up the button to add a new fish using a seperate activity
+        buttonSubmit = (Button) findViewById(R.id.buttonSubmit);
+        buttonSubmit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+
+                //write the bid to Firebase
+                //myFishDbRef.child("Round 1").child(userId).child(key).setValue(etYourBid.getText());
+                Log.d("CIS3334", "onClick for buttons writng bid to database bid = "+etYourBid.getText().toString());        // debugging log
+                Log.d("CIS3334", "onClick for buttons writng bid to database random = "+tvRandom.getText().toString());        // debugging log
+                myFishDbRef.child("Round 1").child(userId).child("Bid").setValue(etYourBid.getText().toString());
+                myFishDbRef.child("Round 1").child(userId).child("Random").setValue(tvRandom.getText().toString());
+
+            }
+        });
+    }
+
     /*
     private String getRandom(AppCompatActivity activity) {
         mAuth = FirebaseAuth.getInstance();
@@ -179,13 +194,13 @@ public class MainActivity extends AppCompatActivity {
     }
     */
 
-
+    /*
     private void checkAutionData(DataSnapshot dataSnapshot) {
         Log.d("CIS3334", "=== checkAutionData === ");
         //myFishDbRef.child("Round 1").child(userId).setValue(etYourBid.getText().toString());
-        for (DataSnapshot data : dataSnapshot.child("Round 1").getChildren()) {
+        for (DataSnapshot data : dataSnapshot.child("Round 1").child(userId).getChildren()) {
             String bidAmount = (String )data.getValue();
-            String rValue = (String )data.getValue();
+           // String rValue = (String )data.getValue();
             Log.d("CIS3334", "=== checkAutionData bid amount = "+ bidAmount);
             String UserIdForBid = data.getKey();
             Log.d("CIS3334", "=== checkAutionData  key = "+ UserIdForBid);
@@ -194,8 +209,77 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Log.d("CIS3334", "=== checkAutionData Found OTHER team's bid ");
             }
+
+
+            //tvPayoff.setText(tvRandom.toString());
             //String randomValue = (String )data.getValue();
             //Log.d("CIS3334", "=== checkAutionData random value = " + randomValue);
         }
+    } */
+
+    private void checkAutionData(DataSnapshot dataSnapshot) {
+        Log.d("CIS3334", "=== checkAutionData === ");
+        if (userId!=null) {
+            //myFishDbRef.child("Round 1").child(userId).setValue(etYourBid.getText().toString());
+            for (DataSnapshot data : dataSnapshot.child("Round 1").getChildren()) {
+                String UserIdForBid = data.getKey();
+                String theirBidAmount = (String )data.child("Bid").getValue();
+                String theirRandomValue = (String )data.child("Random").getValue();
+                Log.d("CIS3334", "=== checkAutionData  key = "+ UserIdForBid);
+                Log.d("CIS3334", "=== checkAutionData  userID = "+ userId);
+                Log.d("CIS3334", "=== checkAutionData bid amount = "+ theirBidAmount);
+                Log.d("CIS3334", "=== checkAutionData random amount = "+ theirRandomValue);
+                if (UserIdForBid.compareTo(userId)==0) {
+                    Log.d("CIS3334", "=== checkAutionData Found OUR team's bid ");
+                } else {
+                    Log.d("CIS3334", "=== checkAutionData Found OTHER team's bid ");
+                }
+
+                String yourBid = (String ) data.child("Round 1").child(userId).child("Bid").getValue();
+                String yourRandom = (String )data.child("Round 1").child("Random").child(userId).getValue();
+
+                tvYourInfo.setText("Your user Id is " + userId + " and your bid amount is "
+                        + yourBid + "\n " + " and your random value is " + yourRandom);
+
+                tvTheirInfo.setText("Their user Id is " + UserIdForBid + " and their bid amount is "
+                        + theirBidAmount + "\n" + " and their random value is " + theirRandomValue);
+
+
+                //dataSnapshot.child(userId).getValue();
+
+                /*
+
+                dataSnapshot.child(UserIdForBid).getValue();
+                dataSnapshot.child(rValue).getValue();
+
+
+                Double myBid = Double.parseDouble(userId);
+                Double theirBid = Double.parseDouble(UserIdForBid);
+                Double youTotal;
+
+
+
+                if (myBid > theirBid ) {
+
+                   tvPayoff.setText("Your bid is " + myBid.toString());
+                   // tvTotal.setText("Your Total is " + );
+
+               } else if (myBid < theirBid) {
+
+                    tvPayoff.setText("Your payoff is 0");
+
+
+                }
+                dataSnapshot.child()
+
+                        */
+
+
+            }
+
+
+        }
     }
+
+
 }

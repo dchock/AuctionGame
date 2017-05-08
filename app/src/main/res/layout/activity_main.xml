@@ -40,13 +40,40 @@
         android:id="@+id/buttonNextRound"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Next Round" />
+        android:text="@string/next_round" />
 
     <Button
         android:id="@+id/buttonLogOut"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onClick"
-        android:text="Sign Out" />
+        android:text="@string/sign_out" />
+
+    <TextView
+        android:id="@+id/textViewPayoff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Payoff"
+        android:textSize="24sp"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/textViewTotal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/total"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textViewYourInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/your_info" />
+
+    <TextView
+        android:id="@+id/textViewTheirInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Their Info" />
 
 </LinearLayout>

@@ -7,4 +7,8 @@
     <string name="create_user">CreateUser</string>
     <string name="enter_password">Enter Password</string>
     <string name="login">Login</string>
+    <string name="your_info">Your Info</string>
+    <string name="next_round">Next Round</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="total">Total</string>
 </resources>
