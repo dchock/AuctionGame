@@ -20,7 +20,11 @@
     <TextView
         android:id="@+id/textViewYourRandom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:inputType="number|numberDecimal"
+        android:numeric="integer|decimal"
+        tools:ignore="Deprecated,TextViewEdits"
+        android:maxLines="1" />
 
     <EditText
         android:id="@+id/editTextYourBid"
@@ -28,7 +32,9 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/enter_your_bid_here"
-        android:inputType="textPersonName" />
+        android:inputType="numberDecimal"
+        android:numeric="decimal"
+        tools:ignore="Deprecated" />
 
     <Button
         android:id="@+id/buttonSubmit"
@@ -41,13 +47,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/next_round" />
-
-    <Button
-        android:id="@+id/buttonLogOut"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onClick"
-        android:text="@string/sign_out" />
 
     <TextView
         android:id="@+id/textViewPayoff"
@@ -74,6 +73,19 @@
         android:id="@+id/textViewTheirInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Their Info" />
+        android:text="@string/their_info" />
+
+    <Button
+        android:id="@+id/buttonNewGame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/new_game" />
+
+    <Button
+        android:id="@+id/buttonLogOut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="@string/sign_out" />
 
 </LinearLayout>

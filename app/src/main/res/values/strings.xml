@@ -11,4 +11,6 @@
     <string name="next_round">Next Round</string>
     <string name="sign_out">Sign Out</string>
     <string name="total">Total</string>
+    <string name="new_game">New Game</string>
+    <string name="their_info">Their Info</string>
 </resources>

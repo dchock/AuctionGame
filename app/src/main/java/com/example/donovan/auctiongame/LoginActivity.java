@@ -1,5 +1,6 @@
 package com.example.donovan.auctiongame;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -40,7 +41,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();  //declare object for Firebase
 
-
         ButtonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.d("CIS3334", "Normal login ");
@@ -66,9 +66,12 @@ public class LoginActivity extends AppCompatActivity {
                     if (!task.isSuccessful()) { //when failed
                         Toast.makeText(LoginActivity.this, "SignIn--Authentication failed.",Toast.LENGTH_LONG).show();
                     } else {
-                        //return to MainActivity is login works
+                        //return to MainActivity if login works
+
                         finish();
+
                     }
+
                 }
             });
         }
