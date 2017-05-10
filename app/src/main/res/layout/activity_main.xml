@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/enter_your_bid_here"
-        android:inputType="numberDecimal"
+        android:inputType="number|numberDecimal"
         android:numeric="decimal"
         tools:ignore="Deprecated" />
 
