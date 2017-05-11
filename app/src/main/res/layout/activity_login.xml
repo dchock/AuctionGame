@@ -26,11 +26,13 @@
         android:id="@+id/buttonLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="onClick"
         android:text="@string/login" />
 
     <Button
         android:id="@+id/buttonCreateUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="onClick"
         android:text="@string/create_user" />
 </LinearLayout>

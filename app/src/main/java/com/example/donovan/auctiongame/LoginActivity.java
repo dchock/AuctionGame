@@ -66,11 +66,12 @@ public class LoginActivity extends AppCompatActivity {
                     if (!task.isSuccessful()) { //when failed
                         Toast.makeText(LoginActivity.this, "SignIn--Authentication failed.",Toast.LENGTH_LONG).show();
                     } else {
+
                         //return to MainActivity if login works
+
                         finish();
 
                     }
-
                 }
             });
         }

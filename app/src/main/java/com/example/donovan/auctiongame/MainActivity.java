@@ -28,7 +28,7 @@ import static java.lang.Double.parseDouble;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView tvRound, tvRandom, tvPayoff, tvTotal, tvYourInfo, tvTheirInfo;
+    TextView tvRound, tvRandom, tvPayoff, tvTotal, tvYourInfo, tvTheirInfo, tvUserID;
     EditText etYourBid;
     Button buttonSubmit;
     Button buttonLogOut;
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     Double yourBid, otherBid, yourRandom, otherRandom;
     String otherId;
+    int yourRound, otherRound;
 
     static Double yourTotal = 0.0;
 
@@ -72,11 +73,14 @@ public class MainActivity extends AppCompatActivity {
         tvTotal = (TextView)findViewById(R.id.textViewTotal);
         tvYourInfo = (TextView)findViewById(R.id.textViewYourInfo);
         tvTheirInfo = (TextView)findViewById(R.id.textViewTheirInfo);
+        tvUserID = (TextView)findViewById(R.id.textViewUserID);
+
 
 
        // String round = "Round " + roundCount;
 
-        tvRound.setText("Round" + roundCount);
+
+        tvRound.setText("Round  " + roundCount);
 
         //Display the round
         //randomValue = rangeMin + (rangeMax - rangeMin) * Math.random();
@@ -109,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
 
                     userId = user.getUid();
+                    tvUserID.setText("Your User ID is: " + userId);
                     randomValue = rangeMin + (rangeMax - rangeMin) * Math.random();
                     tvRandom.setText(VALUE_FORMAT.format(randomValue));
 
@@ -183,8 +188,11 @@ public class MainActivity extends AppCompatActivity {
         buttonNextRound = (Button)findViewById(R.id.buttonNewGame);
         buttonNewGame.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
-                myFishDbRef.child("Round " + roundCount).setValue("");
 
+                //myFishDbRef.child("Round " + roundCount).setValue("");
+                roundCount = 1;
+                //myFishDbRef.child("Round " + roundCount).updateChildren(null);
+                myFishDbRef.child("Round " + roundCount).getParent().setValue("");
             }
         });
     }
@@ -195,12 +203,21 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 roundCount++;
+
                 tvRound.setText("Round " + roundCount);
-                //myFishDbRef.child(round).setValue("");
 
                 //Display new random value
                 randomValue = rangeMin + (rangeMax - rangeMin) * Math.random();
                 tvRandom.setText(VALUE_FORMAT.format(randomValue));
+                etYourBid.setText("");
+                tvPayoff.setText("");
+               // tvTotal.setText("Your total is " + VALUE_FORMAT.format(yourTotal));
+
+                //myFishDbRef.child("Round " + roundCount).child(userId).child("Bid").setValue("");
+                //myFishDbRef.child("Round " + roundCount).child(userId).child("Random").setValue("");
+                //myFishDbRef.child("Round " + roundCount).child(userId).child("thisRound").setValue("");
+
+
             }
         });
     }
@@ -216,8 +233,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("CIS3334", "onClick for buttons writng bid to database bid = "+etYourBid.getText().toString());        // debugging log
                 Log.d("CIS3334", "onClick for buttons writng bid to database random = "+tvRandom.getText().toString());     // debugging log
 
-                myFishDbRef.child("Round " + roundCount).child(userId).child("Bid").setValue(etYourBid.getText().toString());
+                //myFishDbRef.child(userId).child("Round " + roundCount).child("Bid").setValue(etYourBid.getText().toString());
+                //myFishDbRef.child(userId).child("Round " + roundCount).child("Random").setValue(tvRandom.getText().toString());
+                //myFishDbRef.child("Round " + roundCount).setValue("Round " + roundCount);
                 myFishDbRef.child("Round " + roundCount).child(userId).child("Random").setValue(tvRandom.getText().toString());
+                myFishDbRef.child("Round " + roundCount).child(userId).child("Bid").setValue(etYourBid.getText().toString());
+                //myFishDbRef.child("Round " + roundCount).child(userId).child("thisRound").setValue(String.valueOf(roundCount));
 
             }
         });
@@ -227,71 +248,95 @@ public class MainActivity extends AppCompatActivity {
     private void checkAutionData(DataSnapshot dataSnapshot) {
         Log.d("CIS3334", "=== checkAutionData === ");
         if (userId!=null) {
-            //myFishDbRef.child("Round 1").child(userId).setValue(etYourBid.getText().toString());
 
-            for (DataSnapshot data : dataSnapshot.child("Round " + roundCount).getChildren()) {
+            for (DataSnapshot data : dataSnapshot.child("Round " + roundCount).getChildren()) {//.child("Round " + roundCount).getChildren()) {
                 String UserIdForBid = data.getKey();
                 String BidAmount = (String )data.child("Bid").getValue();
                 String RandomValue = (String ) data.child("Random").getValue();
+                //String CurrentRound = (String ) data.child("thisRound").getValue();
+
 
                 Log.d("CIS3334", "=== checkAutionData  key = "+ UserIdForBid);
                 Log.d("CIS3334", "=== checkAutionData  userID = "+ userId);
                 Log.d("CIS3334", "=== checkAutionData bid amount = "+ BidAmount);
                 Log.d("CIS3334", "=== checkAutionData random amount = "+ RandomValue);
 
-                if (UserIdForBid.compareTo(userId)==0) {
-                    Log.d("CIS3334", "=== checkAutionData Found OUR team's bid ");
+                if (BidAmount != null && RandomValue != null ) {//  && CurrentRound != null) {
 
-                    yourBid = Double.parseDouble(BidAmount);
-                    yourRandom = Double.parseDouble(RandomValue);
+                    if (UserIdForBid.compareTo(userId) == 0) {
+                        Log.d("CIS3334", "=== checkAutionData Found OUR team's bid ");
 
+                        yourBid = Double.parseDouble(BidAmount);
+                        yourRandom = Double.parseDouble(RandomValue);
+                        //yourRound = Integer.parseInt(CurrentRound);
+
+                    } else {
+                        Log.d("CIS3334", "=== checkAutionData Found OTHER team's bid ");
+
+                        otherBid = Double.parseDouble(BidAmount);
+                        otherRandom = Double.parseDouble(RandomValue);
+                        otherId = UserIdForBid;
+                        //otherRound = Integer.parseInt(CurrentRound);
+
+                    }
 
                 } else {
-                    Log.d("CIS3334", "=== checkAutionData Found OTHER team's bid ");
 
-                    otherBid = Double.parseDouble(BidAmount);
-                    otherRandom = Double.parseDouble(RandomValue);
-                    otherId = UserIdForBid;
-
+                    Log.d("CIS3334", "=== either BidAmount or RandomValue have not been updated yet ");
                 }
+
+                //tvYourInfo.setText("Current round is " + yourRound);
+
+               // if (yourRound != otherRound) {
+
+               //      tvYourInfo.setText("Rounds are not the same. Wait for other player");
+
+                //} else {
+
+                    //If both values are submitted
+                    if (yourBid != null && otherBid != null) {
+
+                        if (yourBid > otherBid) {
+                            Double yourPayoff = (yourRandom - yourBid);
+                            tvPayoff.setText("Your payoff is " + VALUE_FORMAT.format(yourPayoff));
+                            yourTotal = +yourPayoff;
+                            tvTotal.setText("Your total is " + VALUE_FORMAT.format(yourTotal));
+                            Toast.makeText(MainActivity.this, "You win this round", Toast.LENGTH_SHORT).show();
+                            //tvYourInfo.setText("Your user ID is " + userId + " and your bid is " + yourBid + " and your random is " + yourRandom);
+                            //tvTheirInfo.setText("Their user ID is " + otherId + " and their bid is " + otherBid + " and their random is " + otherRandom);
+
+                        } else {
+
+                            Toast.makeText(MainActivity.this, "You lose this round.", Toast.LENGTH_SHORT).show();
+                            Double yourPayoff = 0.0;
+                            tvPayoff.setText("Your payoff is " + VALUE_FORMAT.format(yourPayoff));
+                            yourTotal = +yourPayoff;
+                            tvTotal.setText("Your total is " + VALUE_FORMAT.format(yourTotal));
+
+                        }
+
+                    } else if (yourBid != null && otherBid == null) {
+
+                        tvYourInfo.setText("Waiting for other player");
+
+                    } else if (yourBid == null && otherBid != null) {
+
+                        tvYourInfo.setText("Enter a bid");
+
+                    } else {
+
+                        tvYourInfo.setText("Enter a bid");
+                        tvTheirInfo.setText("Waiting for other player");
+
+                    } // end if-statement for value check
+
+                //} // end if for rounds
 
             } //end for loop
 
-
-        } //end if statement
-        if (yourBid != null && otherBid != null) {
-
-            if (yourBid > otherBid) {
-                //Double yourPayoff = (randomValue - yourBid);
-                //tvPayoff.setText("Your payoff is " + VALUE_FORMAT.format(yourPayoff));
-                //yourTotal =+ yourPayoff;
-                Toast.makeText(MainActivity.this, "You win this round", Toast.LENGTH_LONG).show();
-                tvYourInfo.setText("Your user ID is " + userId + " and your bid is " + yourBid + " and your random is " + yourRandom);
-                tvTheirInfo.setText("Their user ID is " + otherId + " and their bid is " + otherBid+ " and their random is " + otherRandom);
-
-
-            } else {
-
-                Toast.makeText(MainActivity.this, "You lose this round.", Toast.LENGTH_LONG).show();
-
-            }
-
-        } else if (yourBid != null && otherBid == null) {
-
-            tvYourInfo.setText("Waiting for other player");
-
-        } else if (yourBid == null && otherBid != null ) {
-
-            tvYourInfo.setText("Enter a bid");
-
-        } else {
-
-            tvYourInfo.setText("Waiting for other player");
-            tvYourInfo.setText("Enter a bid");
-
-        }
+        } //end if statement for checkAutionData
 
     } //end checkAutionData
 
-
 } //end MainActivity
+
