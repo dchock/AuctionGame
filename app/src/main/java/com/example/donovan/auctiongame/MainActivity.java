@@ -42,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
     Double rangeMax = 100.0;
     Double randomValue;
 
-
-
     Double yourBid, otherBid, yourRandom, otherRandom;
     String otherId;
     int yourRound = 0, otherRound =0;
@@ -64,12 +62,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    /**
+     * The onCreate method runs right when you start the app
+     * Sets the layout and assigns variables to their respective fields on the layout
+     * Sets onClickListeners to each button in the layout
+     * @param savedInstanceState
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /**
+         *Assigns variables to text and button fields in activity_main.xml layout
+         */
         tvRound = (TextView)findViewById(R.id.textViewRound);
         tvRandom = (TextView)findViewById(R.id.textViewYourRandom);
         etYourBid = (EditText)findViewById(R.id.editTextYourBid);
@@ -80,16 +87,23 @@ public class MainActivity extends AppCompatActivity {
         tvTheirInfo = (TextView)findViewById(R.id.textViewTheirInfo);
         tvUserID = (TextView)findViewById(R.id.textViewUserID);
 
-
+        /**
+         * Open db
+         * set text fields blank
+         * clear old db values
+         */
         openDB();
         myFishDbRef.child(userId).getParent().setValue(null);
-
         etYourBid.setText("");
         tvRound.setText("Round  " + roundCount);
         tvYourInfo.setText("");
         tvTheirInfo.setText("");
 
-
+        /**
+         * Sets onClick listener for buttonLogout
+         * @param view.OnClickListener
+         * @param v
+         */
         buttonLogOut.setOnClickListener(new View.OnClickListener() {
             public void onClick (View v) {
                 Log.d("CIS3334", "Normal Logout");
@@ -98,7 +112,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        /**
+         * get instance of current firebase user
+         * open LoginActivity if user==null
+         * @param firebaseAuth
+         */
         mAuth = FirebaseAuth.getInstance(); //declare object for Firebase
         mAuthListener = new FirebaseAuth.AuthStateListener() { //initialized mAuthListener
             @Override
@@ -122,8 +140,10 @@ public class MainActivity extends AppCompatActivity {
         };
 
 
+        /**
+         * instantiate methods
+         */
         setupFirebaseDataChange();
-        //openDB();
         setupAddButton();
         nextRound();
         newGame();
@@ -131,12 +151,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * open onStart
+     */
     public void onStart(){
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener); //adds a listener to the object
         //FirebaseUser currentUser = mAuth.getCurrentUser();
     }
 
+    /**
+     * instantiate methods
+     */
     public void onStop(){
         super.onStop();
         if (mAuthListener != null) { //checks for an instance of mAuthListener
@@ -145,6 +171,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * set up Firebase exchange
+     * @param dataSnapshot
+     * @param databaseError
+     */
     private void setupFirebaseDataChange() {
         Log.d("CIS3334", "setupFirebaseDataChange openning the database");        // debugging log
         openDB();
@@ -161,6 +192,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Open Firebase db
+     */
     public DatabaseReference openDB()  {
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -170,7 +204,10 @@ public class MainActivity extends AppCompatActivity {
         return myFishDbRef;
     }
 
-    // get the current logged in user's id from Firebase
+    /**
+     * get the current logged in user's id from Firebase
+     * @param activity
+     */
     private String getUserId(AppCompatActivity activity) {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -183,7 +220,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // TEG added
+    /**
+     * onclick listener for buttonNewGame click
+     * resets game all game values
+     * @param view
+     */
     private void newGame(){
         buttonNewGame = (Button)findViewById(R.id.buttonNewGame);
         buttonNewGame.setOnClickListener(new View.OnClickListener(){
@@ -207,6 +248,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * onclick listener for nextRound click
+     * @param view
+     */
     private void nextRound() {
         buttonNextRound = (Button) findViewById(R.id.buttonNextRound);
         buttonNextRound.setOnClickListener(new View.OnClickListener() {
@@ -231,6 +276,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * onclick listener for setupAddbutton click. Pushes values to firebase
+     * @param view
+     */
     private void setupAddButton() {
         // Set up the button to add a new fish using a seperate activity
         buttonSubmit = (Button) findViewById(R.id.buttonSubmit);
@@ -251,7 +300,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * DataSnapshot for myFishDbRef
+     *@param dataSnapshot
+     */
     private void checkAutionData(DataSnapshot dataSnapshot) {
 
         Log.d("CIS3334", "=== checkAutionData === ");
@@ -328,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
 
                             tvYourInfo.setText("Enter a bid");
 
-                        }
+                        } //compare bids
 
                     } // end if for rounds
 
@@ -338,8 +390,6 @@ public class MainActivity extends AppCompatActivity {
                     //Toast.makeText(MainActivity.this, "Someones BidAmount or RandomValue have not been updated yet", Toast.LENGTH_SHORT).show();
                     tvTheirInfo.setText("Waiting for other player");
                 }
-
-                //tvYourInfo.setText("Current round is " + yourRound);
 
             } //end for loop
 

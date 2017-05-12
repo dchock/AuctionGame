@@ -16,7 +16,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
- * Created by Donovan on 04/05/17.
+ * This app is a blind auction game between two players connected to Firebase database.
+ *
+ * @author  Donovan Chock
+ * @version 1.0
+ * @since   04/05/17.
  */
 
 public class LoginActivity extends AppCompatActivity {
@@ -28,11 +32,21 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
 
 
+    /**
+     * The onCreate method runs right when LoginActivity.java is called
+     * Sets the layout and assigns variables to their respective fields on the layout
+     * Sets onClickListeners to each button in the layout
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+        /**
+         *Assigns variables to text and button fields in activity_main.xml layout
+         */
         Email = (EditText) findViewById(R.id.editTextEmail);
         Password = (EditText) findViewById(R.id.editTextPassword);
         ButtonLogin = (Button) findViewById(R.id.buttonLogin);
@@ -58,6 +72,12 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Passes the email and password from the text fields and signes the user into account.
+     * returns an error if createAccount is unsuccessful
+     * @param email
+     * @param password
+     */
         private void signIn(String email, String password){
             //sign in the recurrent user with email and password previously created.
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() { //add to listener
@@ -76,6 +96,13 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
+
+    /**
+     * Passes the email and password from the text fields and creates the users account.
+     * returns an error if createAccount is unsuccessful
+     * @param email
+     * @param password
+     */
         private void createAccount(String email, String password) {
             //create account for new users
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
